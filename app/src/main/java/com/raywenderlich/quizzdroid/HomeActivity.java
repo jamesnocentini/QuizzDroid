@@ -50,11 +50,10 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-
-        Manager manager = Manager.getSharedInstance(getApplicationContext());
         recyclerView = (RecyclerView) findViewById(R.id.rvQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Manager manager = Manager.getSharedInstance(getApplicationContext());
 
         QueryEnumerator questions = null;
         try {
@@ -76,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
             public void OnClick(View view, int position) {
                 Log.d(TAG, String.format("Click question at position %d", position));
                 Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
-                Question selected = (Question) adapter.getmQuestions().get(position);
+                Question selected = adapter.getmQuestions().get(position);
                 intent.putExtra(EXTRA_INTENT_ID, selected.get_id());
                 startActivity(intent);
             }
