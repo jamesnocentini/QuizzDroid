@@ -51,17 +51,22 @@ public class Question {
     }
 
     public static Query getQuestions(Database database) {
+        // 1
         View view = database.getView(QUESTION_VIEW_NAME);
         if (view.getMap() == null) {
+            // 2
             view.setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
                     if (document.get("type").equals("question")) {
+                        // 3
                         emitter.emit(document.get("_id"), null);
                     }
                 }
+            // 4
             }, "6");
         }
+        // 5
         Query query = view.createQuery();
         return query;
     }

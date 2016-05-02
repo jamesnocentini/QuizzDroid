@@ -52,28 +52,35 @@ public class Manager {
     private String SYNC_GATEWAY_URL = "http://localhost:4984/quizzdroid";
 
     protected Manager(Context context) {
+        // 1
         com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG, com.couchbase.lite.util.Log.VERBOSE);
         com.couchbase.lite.Manager.enableLogging(Log.TAG_QUERY, com.couchbase.lite.util.Log.VERBOSE);
         com.couchbase.lite.Manager.enableLogging(Log.TAG_LISTENER, com.couchbase.lite.util.Log.VERBOSE);
         com.couchbase.lite.Manager.enableLogging(Log.TAG_ROUTER, com.couchbase.lite.util.Log.VERBOSE);
         com.couchbase.lite.Manager.enableLogging(Log.TAG_VIEW, com.couchbase.lite.util.Log.VERBOSE);
 
-        copyAssetFolder(context.getAssets(), "quizzdroid.cblite2",
+        // 2
+        Helper.copyAssetFolder(context.getAssets(), "quizzdroid.cblite2",
                     "/data/data/com.raywenderlich.quizzdroid/files/quizzdroid.cblite2");
 
-        View.setCompiler(new JavaScriptViewCompiler());
         com.couchbase.lite.Manager manager = null;
         try {
+            // 3
             manager = new com.couchbase.lite.Manager(new AndroidContext(context), null);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
+            // 4
+            assert manager != null;
             database = manager.getExistingDatabase("quizzdroid");
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
+
+        // 5
         Credentials credentials = new Credentials(null, null);
+        View.setCompiler(new JavaScriptViewCompiler());
         LiteListener liteListener = new LiteListener(manager, 5984, credentials);
         Thread thread = new Thread(liteListener);
         thread.start();
@@ -96,57 +103,6 @@ public class Manager {
 
     public final String path = "/data/data/com.raywenderlich.quizzdroid/files/quizzdroid.cblite2/";
     public final String Name = "db.sqlite3";
-
-    private static boolean copyAssetFolder(AssetManager assetManager,
-                                           String fromAssetPath, String toPath) {
-        try {
-            String[] files = assetManager.list(fromAssetPath);
-            new File(toPath).mkdirs();
-            boolean res = true;
-            for (String file : files)
-                if (file.contains("."))
-                    res &= copyAsset(assetManager,
-                            fromAssetPath + "/" + file,
-                            toPath + "/" + file);
-                else
-                    res &= copyAssetFolder(assetManager,
-                            fromAssetPath + "/" + file,
-                            toPath + "/" + file);
-            return res;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private static boolean copyAsset(AssetManager assetManager,
-                                     String fromAssetPath, String toPath) {
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = assetManager.open(fromAssetPath);
-            new File(toPath).createNewFile();
-            out = new FileOutputStream(toPath);
-            copyFile(in, out);
-            in.close();
-            in = null;
-            out.flush();
-            out.close();
-            out = null;
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private static void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
-        }
-    }
 
     public static Manager getSharedInstance(Context context) {
         if (instance == null) {
