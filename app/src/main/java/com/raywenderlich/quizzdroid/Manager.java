@@ -24,16 +24,21 @@ package com.raywenderlich.quizzdroid;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
+import com.couchbase.lite.Document;
+import com.couchbase.lite.Query;
+import com.couchbase.lite.QueryEnumerator;
+import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.View;
 import com.couchbase.lite.android.AndroidContext;
+import com.couchbase.lite.javascript.JavaScriptReplicationFilterCompiler;
 import com.couchbase.lite.javascript.JavaScriptViewCompiler;
 import com.couchbase.lite.listener.Credentials;
 import com.couchbase.lite.listener.LiteListener;
 import com.couchbase.lite.replicator.Replication;
-import com.couchbase.lite.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,58 +50,67 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Manager {
     private static Manager instance = null;
     public Database database;
-    private String SYNC_GATEWAY_URL = "http://localhost:4984/quizzdroid";
+    private static String TAG = "Manager";
+    public Replication push;
+    public Replication pull;
 
     protected Manager(Context context) {
+        Helper.copyAssetFolder(context.getAssets(), "quizzdroid.cblite2",
+                "/data/data/com.raywenderlich.quizzdroid/files/quizzdroid.cblite2");
+
         // 1
         com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG, com.couchbase.lite.util.Log.VERBOSE);
-        com.couchbase.lite.Manager.enableLogging(Log.TAG_QUERY, com.couchbase.lite.util.Log.VERBOSE);
-        com.couchbase.lite.Manager.enableLogging(Log.TAG_LISTENER, com.couchbase.lite.util.Log.VERBOSE);
-        com.couchbase.lite.Manager.enableLogging(Log.TAG_ROUTER, com.couchbase.lite.util.Log.VERBOSE);
-        com.couchbase.lite.Manager.enableLogging(Log.TAG_VIEW, com.couchbase.lite.util.Log.VERBOSE);
+        com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG_QUERY, com.couchbase.lite.util.Log.VERBOSE);
+        com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG_LISTENER, com.couchbase.lite.util.Log.VERBOSE);
+        com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG_ROUTER, com.couchbase.lite.util.Log.VERBOSE);
+        com.couchbase.lite.Manager.enableLogging(com.couchbase.lite.util.Log.TAG_VIEW, com.couchbase.lite.util.Log.VERBOSE);
 
         // 2
-        Helper.copyAssetFolder(context.getAssets(), "quizzdroid.cblite2",
-                    "/data/data/com.raywenderlich.quizzdroid/files/quizzdroid.cblite2");
-
         com.couchbase.lite.Manager manager = null;
         try {
-            // 3
             manager = new com.couchbase.lite.Manager(new AndroidContext(context), null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // 3
         try {
-            // 4
             assert manager != null;
-            database = manager.getExistingDatabase("quizzdroid");
+            database = manager.getDatabase("quizzdroid");
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
 
-        // 5
+        // 4
         Credentials credentials = new Credentials(null, null);
         View.setCompiler(new JavaScriptViewCompiler());
+        Database.setFilterCompiler(new JavaScriptReplicationFilterCompiler());
         LiteListener liteListener = new LiteListener(manager, 5984, credentials);
         Thread thread = new Thread(liteListener);
         thread.start();
 
         URL syncGatewayURL = null;
         try {
+            String SYNC_GATEWAY_URL = "http://localhost:4985/quizzdroid";
             syncGatewayURL = new URL(SYNC_GATEWAY_URL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-        Replication push = database.createPushReplication(syncGatewayURL);
+        push = database.createPushReplication(syncGatewayURL);
         push.setContinuous(true);
         push.start();
 
-        Replication pull = database.createPullReplication(syncGatewayURL);
+        pull = database.createPullReplication(syncGatewayURL);
         pull.setContinuous(true);
         pull.start();
     }

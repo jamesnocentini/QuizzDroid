@@ -3,11 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".HomeActivity">
+
+    <TextView
+        android:id="@+id/pendingDocs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="15sp"
+        android:background="@color/pendingLabelBackground"
+        android:gravity="center" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvQuestions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pendingDocs" />
 
 </RelativeLayout>

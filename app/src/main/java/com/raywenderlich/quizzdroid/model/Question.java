@@ -23,20 +23,17 @@ package com.raywenderlich.quizzdroid.model;
  */
 
 import com.couchbase.lite.Database;
-import com.couchbase.lite.Document;
 import com.couchbase.lite.Emitter;
 import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.View;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.raywenderlich.quizzdroid.ModelHelper;
 
+import java.util.List;
 import java.util.Map;
 
 public class Question {
 
-    @JsonIgnore
-    private static String QUESTION_VIEW_NAME = "questions";
     private String _id;
     private String _rev;
     private String question;
@@ -44,29 +41,28 @@ public class Question {
     private String tag;
     private String type;
     private String theme;
-    private String[] options;
+    private List<String> options;
     private int answer;
+
+    @JsonIgnore
+    private String _attachments;
 
     public Question() {
     }
 
     public static Query getQuestions(Database database) {
-        // 1
-        View view = database.getView(QUESTION_VIEW_NAME);
+        View view = database.getView("app/questions");
         if (view.getMap() == null) {
-            // 2
             view.setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
                     if (document.get("type").equals("question")) {
-                        // 3
                         emitter.emit(document.get("_id"), null);
                     }
                 }
             // 4
             }, "6");
         }
-        // 5
         Query query = view.createQuery();
         return query;
     }
@@ -127,12 +123,20 @@ public class Question {
         this.theme = theme;
     }
 
-    public String[] getOptions() {
+    public List<String> getOptions() {
         return options;
     }
 
-    public void setOptions(String[] options) {
+    public void setOptions(List<String> options) {
         this.options = options;
+    }
+
+    public String get_attachments() {
+        return _attachments;
+    }
+
+    public void set_attachments(String _attachments) {
+        this._attachments = _attachments;
     }
 
     public int getAnswer() {

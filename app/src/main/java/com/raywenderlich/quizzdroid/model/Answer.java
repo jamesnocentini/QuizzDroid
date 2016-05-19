@@ -28,7 +28,6 @@ import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.Reducer;
 import com.couchbase.lite.View;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,22 +36,21 @@ import java.util.List;
 import java.util.Map;
 
 public class Answer {
-    @JsonIgnore
-    private static String ANSWER_VIEW_NAME = "answers";
+
     private String _id;
     private String _rev;
     private String question_id;
     private String type;
-    private int answer;
+    private String answer;
 
-    public Answer(String question_id, String type, int answer) {
+    public Answer(String question_id, String type, String answer) {
         this.question_id = question_id;
         this.type = type;
         this.answer = answer;
     }
 
     public static Query getAnswersForQuestion(Database database, String questionId) {
-        View view = database.getView(ANSWER_VIEW_NAME);
+        View view = database.getView("app/answers");
         if (view.getMap() == null) {
             view.setMapReduce(new Mapper() {
                 @Override
@@ -60,7 +58,7 @@ public class Answer {
                     if (document.get("type").equals("answer")) {
                         List<Object> keys = new ArrayList<>();
                         keys.add((String) document.get("question_id"));
-                        keys.add((int) document.get("answer"));
+                        keys.add((String) document.get("answer"));
                         emitter.emit(keys, null);
                     }
                 }
@@ -69,7 +67,7 @@ public class Answer {
                 public Object reduce(List<Object> keys, List<Object> values, boolean rereduce) {
                     return values.size();
                 }
-            }, "4");
+            }, "1");
         }
         Query query = view.createQuery();
         query.setGroupLevel(2);
@@ -110,11 +108,11 @@ public class Answer {
         this.type = type;
     }
 
-    public int getAnswer() {
+    public String getAnswer() {
         return answer;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 }

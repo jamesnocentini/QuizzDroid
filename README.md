@@ -64,78 +64,30 @@ http://localhost:5984/quizzdroid/_design/quizzdroid/_view/answers?group_level=2&
     "docs": [
         {
             "_id": "1",
-            "question": "What's the capital of France?",
-            "options": ["Paris", "Rome", "London", "Madrid"],
-            "answer": 0,
-            "tag": "geography",
+            "question": "This picture shows an object in space. Which one is it?",
+            "options": ["A star", "A comet", "An asteroid", "A moon"],
+            "answer": 1,
+            "tag": "image",
             "type": "question",
             "theme": "#FF4E00"
         },
         {
             "_id": "2",
-            "question": "Which of these countries is not in Europe?",
-            "options": ["Bolivia", "United States", "Croatia", "Sweden"],
-            "answer": 1,
+            "question": "What is the capital of New Zealand?",
+            "options": ["Astana", "Bristol", "Wellington", "St Louis"],
+            "answer": 2,
             "tag": "geography",
             "type": "question",
             "theme": "#FEC601"
         },
         {
             "_id": "3",
-            "question": "What's the Android version that preceded Lollipop?",
-            "options": ["KitKat", "Lollipop", "Tetris", "Jumengi"],
-            "answer": 0,
-            "tag": "dev",
+            "question": "Before its release, what device was known as the Nexus Prime?",
+            "options": ["Nexus 4", "Nexus S", "Nexus 10", "Galaxy Nexus"],
+            "answer": 3,
+            "tag": "android",
             "type": "question",
             "theme": "#2EC4B6"
-        },
-        {
-            "_id": "11",
-            "question_id": "1",
-            "type": "answer",
-            "answer": 2
-        },
-        {
-            "_id": "12",
-            "question_id": "1",
-            "type": "answer",
-            "answer": 3
-        },
-        {
-            "_id": "21",
-            "question_id": "2",
-            "type": "answer",
-            "answer": 2
-        },
-        {
-            "_id": "22",
-            "question_id": "2",
-            "type": "answer",
-            "answer": 3
-        },
-        {
-            "_id": "23",
-            "question_id": "2",
-            "type": "answer",
-            "answer": 2
-        },
-        {
-            "_id": "31",
-            "question_id": "3",
-            "type": "answer",
-            "answer": 0
-        },
-        {
-            "_id": "32",
-            "question_id": "3",
-            "type": "answer",
-            "answer": 1
-        },
-        {
-            "_id": "33",
-            "question_id": "3",
-            "type": "answer",
-            "answer": 2
         }
     ]
 }

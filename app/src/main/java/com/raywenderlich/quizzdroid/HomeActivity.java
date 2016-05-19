@@ -27,8 +27,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
@@ -39,22 +41,26 @@ import com.raywenderlich.quizzdroid.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
 
     public static String TAG = "log";
     public static String EXTRA_INTENT_ID = "id";
     private RecyclerView recyclerView;
+    private TextView pendingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        pendingTextView = (TextView) findViewById(R.id.pendingDocs);
         recyclerView = (RecyclerView) findViewById(R.id.rvQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Manager manager = Manager.getSharedInstance(getApplicationContext());
 
+        // 1
         QueryEnumerator questions = null;
         try {
             questions = Question.getQuestions(manager.database).run();
@@ -62,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // 2
         List<Question> data = new ArrayList<>();
         for (QueryRow question : questions) {
             Document document = question.getDocument();
@@ -69,7 +76,11 @@ public class HomeActivity extends AppCompatActivity {
             data.add(model);
         }
 
+        // 3
         final HomeAdapter adapter = new HomeAdapter(data);
+        // 4
+        recyclerView.setAdapter(adapter);
+
         adapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
             @Override
             public void OnClick(View view, int position) {
@@ -80,6 +91,14 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "The onResume method is called");
+        Manager manager = Manager.getSharedInstance(getApplicationContext());
+        Set<String> pendingDocIDs = manager.push.getPendingDocumentIDs();
+        pendingTextView.setText(String.format("%d documents not uploaded", pendingDocIDs.size()));
     }
 }

@@ -30,22 +30,24 @@ import android.widget.TextView;
 
 import com.raywenderlich.quizzdroid.R;
 
-public class OptionsQuestionAdapter extends BaseAdapter {
+import java.util.List;
 
-    private final String[] mOptions;
+public class QuestionOptionsAdapter extends BaseAdapter {
 
-    public OptionsQuestionAdapter(String[] options) {
+    private final List<String> mOptions;
+
+    public QuestionOptionsAdapter(List<String> options) {
         mOptions = options;
     }
 
     @Override
     public int getCount() {
-        return mOptions.length;
+        return mOptions.size();
     }
 
     @Override
     public String getItem(int position) {
-        return mOptions[position];
+        return mOptions.get(position);
     }
 
     @Override

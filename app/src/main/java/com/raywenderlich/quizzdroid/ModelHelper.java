@@ -22,6 +22,8 @@ package com.raywenderlich.quizzdroid;
  * THE SOFTWARE.
  */
 
+import android.util.Log;
+
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
@@ -57,6 +59,7 @@ public class ModelHelper {
 
     public static <T> T modelForDocument(Document document, Class<T> aClass) {
         ObjectMapper m = new ObjectMapper();
+        Log.d(HomeActivity.TAG, String.format("Doc id %s", document.getId()));
         return m.convertValue(document.getProperties(), aClass);
     }
 
