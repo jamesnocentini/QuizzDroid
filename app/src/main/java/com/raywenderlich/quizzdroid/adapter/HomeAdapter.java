@@ -60,9 +60,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Question question = mQuestions.get(position);
 
-        holder.itemView.setBackgroundColor(Color.parseColor(question.getTheme()));
+        switch (question.getTag()) {
+            case "science":
+                holder.itemView.setBackgroundColor(Color.parseColor("#FF4E00"));
+                break;
+            case "geography":
+                holder.itemView.setBackgroundColor(Color.parseColor("#FEC601"));
+                break;
+            case "android":
+                holder.itemView.setBackgroundColor(Color.parseColor("#2EC4B6"));
+                break;
+            case "logic":
+                holder.itemView.setBackgroundColor(Color.parseColor("#7E52A0"));
+        }
         TextView textView = holder.mQuestion;
-        textView.setText(question.getQuestion());
+        textView.setText(question.getText());
         holder.mTag.setText(question.getTag());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

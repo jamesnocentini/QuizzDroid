@@ -36,13 +36,10 @@ public class Question {
 
     private String _id;
     private String _rev;
-    private String question;
-    private String answer_type;
+    private String text;
     private String tag;
     private String type;
-    private String theme;
     private List<String> options;
-    private int answer;
 
     @JsonIgnore
     private String _attachments;
@@ -60,8 +57,7 @@ public class Question {
                         emitter.emit(document.get("_id"), null);
                     }
                 }
-            // 4
-            }, "6");
+            }, "1");
         }
         Query query = view.createQuery();
         return query;
@@ -83,20 +79,12 @@ public class Question {
         this._rev = _rev;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getText() {
+        return text;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer_type() {
-        return answer_type;
-    }
-
-    public void setAnswer_type(String answer_type) {
-        this.answer_type = answer_type;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getTag() {
@@ -115,14 +103,6 @@ public class Question {
         this.type = type;
     }
 
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
     public List<String> getOptions() {
         return options;
     }
@@ -137,13 +117,5 @@ public class Question {
 
     public void set_attachments(String _attachments) {
         this._attachments = _attachments;
-    }
-
-    public int getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(int answer) {
-        this.answer = answer;
     }
 }

@@ -47,8 +47,6 @@ import com.raywenderlich.quizzdroid.model.Answer;
 import com.raywenderlich.quizzdroid.model.Question;
 
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 public class QuestionActivity extends AppCompatActivity {
 
@@ -72,7 +70,7 @@ public class QuestionActivity extends AppCompatActivity {
         // 1
         Intent intent = getIntent();
         String questionId = intent.getStringExtra(HomeActivity.EXTRA_INTENT_ID);
-        Log.d(HomeActivity.TAG, String.format("Recieved %s", questionId));
+        Log.d(HomeActivity.TAG, String.format("Received %s", questionId));
 
         // 2
         Manager manager = Manager.getSharedInstance(getApplicationContext());
@@ -80,7 +78,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         // 3
         question = ModelHelper.modelForDocument(document, Question.class);
-        textView.setText(question.getQuestion());
+        textView.setText(question.getText());
 
         // 1
         questionOptions = (GridView) findViewById(R.id.question_options);

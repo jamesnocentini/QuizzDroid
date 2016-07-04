@@ -41,12 +41,12 @@ public class Answer {
     private String _rev;
     private String question_id;
     private String type;
-    private String answer;
+    private String user_answer;
 
-    public Answer(String question_id, String type, String answer) {
+    public Answer(String question_id, String type, String user_answer) {
         this.question_id = question_id;
         this.type = type;
-        this.answer = answer;
+        this.user_answer = user_answer;
     }
 
     public static Query getAnswersForQuestion(Database database, String questionId) {
@@ -58,7 +58,7 @@ public class Answer {
                     if (document.get("type").equals("answer")) {
                         List<Object> keys = new ArrayList<>();
                         keys.add((String) document.get("question_id"));
-                        keys.add((String) document.get("answer"));
+                        keys.add((String) document.get("user_answer"));
                         emitter.emit(keys, null);
                     }
                 }
@@ -108,11 +108,11 @@ public class Answer {
         this.type = type;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getUser_answer() {
+        return user_answer;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setUser_answer(String user_answer) {
+        this.user_answer = user_answer;
     }
 }
