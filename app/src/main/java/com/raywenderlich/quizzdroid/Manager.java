@@ -66,7 +66,6 @@ public class Manager {
     public Replication pull;
 
     protected Manager(Context context) {
-
         com.couchbase.lite.Manager manager = null;
         try {
             // 1
@@ -100,6 +99,7 @@ public class Manager {
         Thread thread = new Thread(liteListener);
         thread.start();
 
+        // 1
         URL syncGatewayURL = null;
         try {
             String SYNC_GATEWAY_URL = "http://localhost:4984/quizzdroid";
@@ -108,10 +108,12 @@ public class Manager {
             e.printStackTrace();
         }
 
+        // 2
         push = database.createPushReplication(syncGatewayURL);
         push.setContinuous(true);
         push.start();
 
+        // 3
         pull = database.createPullReplication(syncGatewayURL);
         pull.setContinuous(true);
         pull.start();
