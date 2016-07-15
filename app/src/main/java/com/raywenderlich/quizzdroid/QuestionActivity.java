@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.couchbase.lite.Attachment;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
@@ -110,32 +111,45 @@ public class QuestionActivity extends AppCompatActivity {
             Drawable drawable = Drawable.createFromStream(is, "image");
             imageQuestion.setImageDrawable(drawable);
         }
+
+        showAnswers();
     }
 
     public void onButtonClicked(View view) {
         Answer answer = new Answer(question.get_id(), "answer", question.getOptions().get(selectedOption));
         ModelHelper.save(Manager.getSharedInstance(getApplicationContext()).database, answer);
-        showAnswers();
     }
 
     private void showAnswers() {
         Manager manager = Manager.getSharedInstance(getApplicationContext());
-        Query answers = Answer.getAnswersForQuestion(manager.database, question.get_id());
+        Query answersQuery = Answer.getAnswersForQuestion(manager.database, question.get_id());
+        LiveQuery liveQuery = answersQuery.toLiveQuery();
 
-        QueryEnumerator result = null;
-        try {
-            result = answers.run();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-        String text = "";
+        liveQuery.addChangeListener(new LiveQuery.ChangeListener() {
+            @Override
+            public void changed(LiveQuery.ChangeEvent event) {
+                QueryEnumerator result = event.getRows();
+                String text = "";
 
-        for (QueryRow row : result) {
-            LazyJsonArray<Object> key = (LazyJsonArray<Object>) row.getKey();
-            String answer = (String) key.get(1);
-            String content = String.format("%s: %s \n", answer, row.getValue().toString());
-            text = text.concat(content);
-        }
-        resultTextView.setText(text);
+                for (QueryRow row : result) {
+                    LazyJsonArray<Object> key = (LazyJsonArray<Object>) row.getKey();
+                    Log.d("Debug", String.format("Row %s", (String) key.get(1)));
+                    String answer = (String) key.get(1);
+                    String content = String.format("%s: %s \n", answer, row.getValue().toString());
+                    text = text.concat(content);
+                }
+
+                final String finalText = text;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultTextView.setText(finalText);
+                    }
+                });
+
+            }
+        });
+        liveQuery.start();
+
     }
 }

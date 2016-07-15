@@ -102,7 +102,7 @@ public class Manager {
 
         URL syncGatewayURL = null;
         try {
-            String SYNC_GATEWAY_URL = "http://localhost:4985/quizzdroid";
+            String SYNC_GATEWAY_URL = "http://localhost:4984/quizzdroid";
             syncGatewayURL = new URL(SYNC_GATEWAY_URL);
         } catch (MalformedURLException e) {
             e.printStackTrace();

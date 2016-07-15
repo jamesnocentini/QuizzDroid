@@ -48,13 +48,11 @@ public class HomeActivity extends AppCompatActivity {
     public static String TAG = "log";
     public static String EXTRA_INTENT_ID = "id";
     private RecyclerView recyclerView;
-    private TextView pendingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        pendingTextView = (TextView) findViewById(R.id.pendingDocs);
         recyclerView = (RecyclerView) findViewById(R.id.rvQuestions);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -93,12 +91,4 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "The onResume method is called");
-        Manager manager = Manager.getSharedInstance(getApplicationContext());
-        Set<String> pendingDocIDs = manager.push.getPendingDocumentIDs();
-        pendingTextView.setText(String.format("%d documents not uploaded", pendingDocIDs.size()));
-    }
 }
