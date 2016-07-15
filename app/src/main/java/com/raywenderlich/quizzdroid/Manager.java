@@ -117,9 +117,6 @@ public class Manager {
         pull.start();
     }
 
-    public final String path = "/data/data/com.raywenderlich.quizzdroid/files/quizzdroid.cblite2/";
-    public final String Name = "db.sqlite3";
-
     public static Manager getSharedInstance(Context context) {
         if (instance == null) {
             instance = new Manager(context);
