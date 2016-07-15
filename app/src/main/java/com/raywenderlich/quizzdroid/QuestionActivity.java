@@ -150,6 +150,5 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
         liveQuery.start();
-
     }
 }
