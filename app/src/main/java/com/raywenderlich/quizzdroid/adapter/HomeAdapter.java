@@ -37,78 +37,79 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
-    private List<Question> mQuestions;
-    private OnItemClickListener mOnItemClickListener;
+  private List<Question> mQuestions;
+  private OnItemClickListener mOnItemClickListener;
 
-    public interface OnItemClickListener {
-        void OnClick(View view, int position);
+  public interface OnItemClickListener {
+    void OnClick(View view, int position);
+  }
+
+  public HomeAdapter(List<Question> questions) {
+    this.mQuestions = questions;
+  }
+
+  @Override
+  public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    Context context = parent.getContext();
+    LayoutInflater inflater = LayoutInflater.from(context);
+    View questionView = inflater.inflate(R.layout.row_questions, parent, false);
+    return new ViewHolder(questionView);
+  }
+
+  @Override
+  public void onBindViewHolder(ViewHolder holder, final int position) {
+    // 1
+    Question question = mQuestions.get(position);
+
+    // 2
+    switch (question.getTag()) {
+      case "science":
+        holder.itemView.setBackgroundColor(Color.parseColor("#FF4E00"));
+        break;
+      case "geography":
+        holder.itemView.setBackgroundColor(Color.parseColor("#FEC601"));
+        break;
+      case "android":
+        holder.itemView.setBackgroundColor(Color.parseColor("#2EC4B6"));
+        break;
+      case "logic":
+        holder.itemView.setBackgroundColor(Color.parseColor("#7E52A0"));
     }
 
-    public HomeAdapter(List<Question> mQuestions) {
-        this.mQuestions = mQuestions;
+    // 3
+    holder.mQuestion.setText(question.getText());
+    holder.mTag.setText(question.getTag());
+
+    // 4
+    holder.itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mOnItemClickListener.OnClick(v, position);
+      }
+    });
+  }
+
+  @Override
+  public int getItemCount() {
+    return mQuestions.size();
+  }
+
+  public static class ViewHolder extends RecyclerView.ViewHolder {
+    private TextView mQuestion;
+    private TextView mTag;
+
+    public ViewHolder(View itemView) {
+      super(itemView);
+      mQuestion = (TextView) itemView.findViewById(R.id.question);
+      mTag = (TextView) itemView.findViewById(R.id.tagText);
     }
+  }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View questionView = inflater.inflate(R.layout.row_questions, parent, false);
-        return new ViewHolder(questionView);
-    }
+  public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    mOnItemClickListener = onItemClickListener;
+  }
 
-    @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        Question question = mQuestions.get(position);
-
-        switch (question.getTag()) {
-            case "science":
-                holder.itemView.setBackgroundColor(Color.parseColor("#FF4E00"));
-                break;
-            case "geography":
-                holder.itemView.setBackgroundColor(Color.parseColor("#FEC601"));
-                break;
-            case "android":
-                holder.itemView.setBackgroundColor(Color.parseColor("#2EC4B6"));
-                break;
-            case "logic":
-                holder.itemView.setBackgroundColor(Color.parseColor("#7E52A0"));
-        }
-        TextView textView = holder.mQuestion;
-        textView.setText(question.getText());
-        holder.mTag.setText(question.getTag());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnItemClickListener.OnClick(v, position);
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mQuestions.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView mQuestion;
-        private TextView mTag;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            mQuestion = (TextView) itemView.findViewById(R.id.question);
-            mTag = (TextView) itemView.findViewById(R.id.tagText);
-        }
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
-    public List<Question> getmQuestions() {
-        return mQuestions;
-    }
-
-    public void setmQuestions(List<Question> mQuestions) {
-        this.mQuestions = mQuestions;
-    }
+  public List<Question> getQuestions() {
+    return mQuestions;
+  }
 }

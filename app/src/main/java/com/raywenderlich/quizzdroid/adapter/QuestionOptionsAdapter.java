@@ -31,38 +31,58 @@ import android.widget.TextView;
 import com.raywenderlich.quizzdroid.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class QuestionOptionsAdapter extends BaseAdapter {
 
-    private final List<String> mOptions;
+  private final List<String> mOptions;
+  private Map<String,Integer> mAnswerCounts;
 
-    public QuestionOptionsAdapter(List<String> options) {
-        mOptions = options;
+  public QuestionOptionsAdapter(List<String> options, Map<String,Integer> answerCounts) {
+    mOptions = options;
+    mAnswerCounts = answerCounts;
+  }
+
+  public void setAnswerCounts(Map<String,Integer> answerCounts)  {
+    mAnswerCounts = answerCounts;
+  }
+
+  @Override
+  public int getCount() {
+    return mOptions.size();
+  }
+
+  @Override
+  public String getItem(int position) {
+    return mOptions.get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    if (convertView == null) {
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+      convertView = inflater.inflate(R.layout.item_answer_option, parent, false);
     }
 
-    @Override
-    public int getCount() {
-        return mOptions.size();
-    }
+    TextView answerView = (TextView) convertView.findViewById(R.id.textOption);
+    TextView countView = (TextView) convertView.findViewById(R.id.textNum);
 
-    @Override
-    public String getItem(int position) {
-        return mOptions.get(position);
-    }
+    String text = getItem(position);
+    answerView.setText(text);
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    Integer count = 0;
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            convertView = inflater.inflate(R.layout.item_answer_option, parent, false);
-        }
-        String text = getItem(position);
-        ((TextView) convertView).setText(text);
-        return convertView;
-    }
+    if (mAnswerCounts != null) {
+      count = mAnswerCounts.get(text);
+   }
+
+    countView.setText(count.toString());
+
+    return convertView;
+  }
 }

@@ -1,9 +1,33 @@
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/text1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:minHeight="48dp"
-    tools:ignore="NewApi" />
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  tools:ignore="NewApi"
+    >
+
+  <TextView
+      android:id="@+id/textOption"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:minHeight="48dp"
+       />
+
+  <TextView
+      android:id="@+id/textNum"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:background="@drawable/count_bubble"
+      android:textColor="@android:color/white"
+      android:layout_gravity="right"
+      tools:ignore="NewApi"
+      android:gravity="center"/>
+
+</FrameLayout>
+
+
+
+
+
+

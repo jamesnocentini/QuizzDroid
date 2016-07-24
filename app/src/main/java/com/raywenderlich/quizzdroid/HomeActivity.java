@@ -23,14 +23,11 @@ package com.raywenderlich.quizzdroid;
  */
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
@@ -41,54 +38,51 @@ import com.raywenderlich.quizzdroid.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
 
-    public static String TAG = "log";
-    public static String EXTRA_INTENT_ID = "id";
-    private RecyclerView recyclerView;
+  public static String EXTRA_INTENT_ID = "id";
+  private RecyclerView mRecyclerView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        recyclerView = (RecyclerView) findViewById(R.id.rvQuestions);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_home);
+    mRecyclerView = (RecyclerView) findViewById(R.id.rvQuestions);
+    mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Manager manager = Manager.getSharedInstance(getApplicationContext());
+    DataManager manager = DataManager.getSharedInstance(getApplicationContext());
 
-        // 1
-        QueryEnumerator questions = null;
-        try {
-            questions = Question.getQuestions(manager.database).run();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-
-        // 2
-        List<Question> data = new ArrayList<>();
-        for (QueryRow question : questions) {
-            Document document = question.getDocument();
-            Question model = ModelHelper.modelForDocument(document, Question.class);
-            data.add(model);
-        }
-
-        // 3
-        final HomeAdapter adapter = new HomeAdapter(data);
-        // 4
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
-            @Override
-            public void OnClick(View view, int position) {
-                Log.d(TAG, String.format("Click question at position %d", position));
-                Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
-                Question selected = adapter.getmQuestions().get(position);
-                intent.putExtra(EXTRA_INTENT_ID, selected.get_id());
-                startActivity(intent);
-            }
-        });
+    // 1
+    QueryEnumerator questions = null;
+    try {
+      questions = Question.getQuestions(manager.database).run();
+    } catch (CouchbaseLiteException e) {
+      e.printStackTrace();
     }
+
+    // 2
+    List<Question> data = new ArrayList<>();
+    for (QueryRow question : questions) {
+      Document document = question.getDocument();
+      Question model = ModelHelper.modelForDocument(document, Question.class);
+      data.add(model);
+    }
+
+    // 3
+    final HomeAdapter adapter = new HomeAdapter(data);
+    // 4
+    mRecyclerView.setAdapter(adapter);
+
+    adapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
+      @Override
+      public void OnClick(View view, int position) {
+        Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
+        Question selected = adapter.getQuestions().get(position);
+        intent.putExtra(EXTRA_INTENT_ID, selected.get_id());
+        startActivity(intent);
+      }
+    });
+  }
 
 }
