@@ -64,16 +64,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     // 2
     switch (question.getTag()) {
       case "science":
-        holder.itemView.setBackgroundColor(Color.parseColor("#FF4E00"));
+        holder.itemView.setBackgroundColor(Color.parseColor("#EC5766"));
         break;
       case "geography":
-        holder.itemView.setBackgroundColor(Color.parseColor("#FEC601"));
+        holder.itemView.setBackgroundColor(Color.parseColor("#FFC857"));
         break;
       case "android":
-        holder.itemView.setBackgroundColor(Color.parseColor("#2EC4B6"));
+        holder.itemView.setBackgroundColor(Color.parseColor("#63ADF2"));
         break;
       case "logic":
-        holder.itemView.setBackgroundColor(Color.parseColor("#7E52A0"));
+        holder.itemView.setBackgroundColor(Color.parseColor("#86CD82"));
     }
 
     // 3
